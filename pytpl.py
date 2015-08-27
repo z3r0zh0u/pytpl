@@ -40,7 +40,9 @@ if __name__ == '__main__':
                 filename += '.py'
         if False == os.path.exists(filename):
             open(filename, 'wb').write(template)
+            print 'Template file ' + filename + ' created successfully.'
         else:
             print filename + ' already exists.'
     else:
         print 'Usage: ' + sys.argv[0] + ' FileName'
+        
