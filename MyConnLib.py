@@ -3,6 +3,7 @@ Simple HTTP Connection Library
 """
 
 import uuid
+import base64
 import urllib
 import urllib2
 import hashlib
@@ -100,7 +101,7 @@ class HTTPConnect:
         return cookies
     
 
-    def get(self, param = None):
+    def get(self, param = None, retobj = False):
         """HTTP Get Request"""
 
         if param:
@@ -116,7 +117,11 @@ class HTTPConnect:
             try:
                 request = urllib2.Request(url, headers = self.headers)
                 response = self.opener.open(request)
-                return response.read()
+
+                if retobj:
+                    return response
+                else:
+                    return response.read()
             except Exception as e:
                 self.__debug_print('[*] Get Error: ' + str(e))
                 tries -= 1
@@ -124,7 +129,7 @@ class HTTPConnect:
         return None
     
 
-    def post(self, data, param = None, multiform = False):
+    def post(self, data, param = None, multiform = False, retobj = False):
         """HTTP Post Request"""
 
         self.__debug_print('[*] Post: ' + self.url)
@@ -146,13 +151,37 @@ class HTTPConnect:
             try:
                 request = urllib2.Request(url, post_data, headers = self.headers)
                 response = self.opener.open(request)
-                return response.read()
+                
+                if retobj:
+                    return response
+                else:
+                    return response.read()
             except Exception as e:
                 self.__debug_print('[*] Get Error: ' + str(e))
                 tries -= 1
         
         return None
 
+
+    def basic_auth(self, username, password):
+        """Basic Authentication"""
+
+        auth = 'Basic ' + base64.b64encode(username + ':' + password)
+        self.add_header('Authorization', auth)
+        
+
+    def use_ua(self, name):
+        """Chose User-Agent"""
+
+        if name == 'Chrome':
+            user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+            self.add_header('User-Agent', user_agent)
+        elif name == 'IE':
+            user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; MAMIJS; rv:11.0) like Gecko'
+            self.add_header('User-Agent', user_agent)
+        else:
+            self.__debug_print('[*] Unsupported User-Agent')
+      
 
     def __multiform_encode(self, data):
         """Generate multipart/form-data Data"""
