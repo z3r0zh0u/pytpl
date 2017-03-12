@@ -1,5 +1,5 @@
 """
-Interactive with process
+My Process Execution Library
 """
 
 import os
@@ -17,7 +17,7 @@ if platform.system() == 'Windows':
 
 
 def queue_output(out, queue):
-    """queue output"""
+    """Queue output"""
         
     for line in iter(out.readline, b''):
         queue.put(line)
@@ -26,7 +26,7 @@ def queue_output(out, queue):
 
 
 def retrieve_output(queue):
-    """retrieve output"""
+    """Retrieve output"""
 
     output = ''
 
@@ -56,7 +56,7 @@ class MyProc:
     
 
     def run_proc(self, param = None, no_wait = False):
-        """run process only"""
+        """Run process only"""
 
         cmd = [self.proc_name]
 
@@ -72,7 +72,7 @@ class MyProc:
 
 
     def run_proc_output(self, param = None):
-        """run process and return the output"""
+        """Run process and return the output"""
 
         cmd = [self.proc_name]
 
@@ -89,7 +89,7 @@ class MyProc:
 
 
     def run_proc_interactive(self, param = None):
-        """interactive with process"""
+        """Interactive with process"""
 
         self.interactive = True
 
@@ -114,26 +114,22 @@ class MyProc:
         out_thread.start()
         err_thread.start()
 
-        out_stdout, out_stderr = self.get_output()
-        
-        if out_stdout != '':
-            print out_stdout
-            
-        if out_stderr != '':
-            print out_stderr
+        time.sleep(0.1)
 
 
     def send_input(self, input):
-        """send input"""
+        """Send input to process"""
 
         if self.interactive:
+
+            self.__debug_print('[*] Stdin: ' + input)
 
             self.proc.stdin.write(input + NewLine)
             time.sleep(0.1)
 
 
     def get_output(self):
-        """get output"""
+        """Get output"""
 
         out_stdout = ''
         out_stderr = ''
@@ -142,19 +138,26 @@ class MyProc:
             out_stdout = retrieve_output(self.out_queue)
             out_stderr = retrieve_output(self.err_queue)
 
+            if len(out_stdout) > 0:
+                self.__debug_print('[*] Stdout: ' + NewLine + out_stdout)
+                self.__debug_print('-' * 40)
+
+            if len(out_stderr) > 0:
+                self.__debug_print('[*] Stderr: ' + NewLine + out_stderr)
+                self.__debug_print('-' * 40)
+
         return out_stdout, out_stderr
 
 
     def __debug_print(self, message):
-        """print debug info"""
+        """Print debug info"""
 
         if self.debug:
             print message
     
-    
 
 def run_process():
-    """run process"""
+    """Run process"""
 
     proc_name = 'c:\\Windows\\System32\\cmd.exe'
     proc = MyProc(proc_name, debug = True)

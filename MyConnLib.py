@@ -1,5 +1,5 @@
 """
-Simple HTTP Connection Library
+My HTTP Connection Library
 """
 
 import uuid
@@ -26,7 +26,7 @@ class MyHTTPErrorProcessor(urllib2.HTTPErrorProcessor):
     https_response = http_response
 
 
-class HTTPConnect:
+class MyHTTP:
 
     def __init__(self, url, redirect = True, debug = False, verbose = False):
         
