@@ -67,7 +67,7 @@ def openvpn_bruteforce(task):
         
         for line in iter(proc.stdout.readline, ''):
             if line.find('Initialization Sequence Completed') != -1:
-                print "OPENVPN-SUCCESS: " + ip + ":" + str(port) + " - " + username + "/" + password
+                print "OPENVPN-SUCCESS: " + ip + ":" + str(port) + " - " + user + "/" + password
                 IsSuccess = True
                 os.kill(proc.pid, signal.SIGQUIT)
 
